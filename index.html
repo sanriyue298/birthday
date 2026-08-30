@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎂 生日快乐 - 专属祝福</title>
+  <meta name="description" content="一个充满惊喜的生日祝福网站：烟花、彩带、蛋糕、倒计时、许愿……" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎂</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════ 加载屏 ═══════════ -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-cake">🎂</div>
+      <h2 class="loader-text">正在为你准备惊喜...</h2>
+      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 背景画布层 ═══════════ -->
+  <canvas id="stars"></canvas>          <!-- 星空+流星 -->
+  <canvas id="fireworks"></canvas>      <!-- 烟花 -->
+  <canvas id="confetti"></canvas>       <!-- 彩带 -->
+  <div id="balloons-layer"></div>       <!-- 浮动气球 -->
+
+  <!-- ═══════════ 侧边导航 ═══════════ -->
+  <nav id="side-nav">
+    <button class="nav-btn" data-target="hero" title="首页"><span>🎂</span></button>
+    <button class="nav-btn" data-target="countdown" title="倒计时"><span>⏳</span></button>
+    <button class="nav-btn" data-target="cake" title="蛋糕"><span>🕯️</span></button>
+    <button class="nav-btn" data-target="wish" title="许愿"><span>🌠</span></button>
+    <button class="nav-btn" data-target="messages" title="祝福"><span>💌</span></button>
+    <button class="nav-btn" id="btn-music" title="音乐"><span>🔇</span></button>
+    <button class="nav-btn" id="btn-settings" title="设置"><span>⚙️</span></button>
+  </nav>
+
+  <!-- ═══════════ 主内容 ═══════════ -->
+  <main>
+
+    <!-- Hero 区 -->
+    <section id="hero" class="section active">
+      <div class="hero-content glass">
+        <div class="hero-badge">🎉 今天是个特别的日子 🎉</div>
+        <h1 class="hero-title"><span id="birthday-name">亲爱的</span>，<br/>生<span class="title-accent">日</span>快<span class="title-accent">乐</span>！</h1>
+        <p class="hero-sub" id="hero-sub">点击屏幕任意位置，为你绽放烟花 🎆</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="btn-boom">🎆 放烟花</button>
+          <button class="btn btn-ghost" data-target="cake">🕯️ 吹蜡烛</button>
+        </div>
+        <div class="hero-hint">↓ 向下滑动，发现更多惊喜 ↓</div>
+      </div>
+      <div class="floating-words" aria-hidden="true">
+        <span>✨</span><span>🎈</span><span>🎁</span><span>🌟</span><span>💖</span><span>🎀</span><span>🌈</span><span>🦄</span>
+      </div>
+    </section>
+
+    <!-- 倒计时区 -->
+    <section id="countdown" class="section">
+      <h2 class="section-title">⏳ 距离 <span class="name-inline" id="countdown-name">生日</span> 还有</h2>
+      <div class="countdown-grid">
+        <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-label">天</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">时</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">分</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">秒</div></div>
+      </div>
+      <div class="countdown-msg" id="countdown-msg">🎂 一起期待那一天的到来吧！</div>
+    </section>
+
+    <!-- 蛋糕区 -->
+    <section id="cake" class="section">
+      <h2 class="section-title">🕯️ 来吹蜡烛吧</h2>
+      <p class="section-sub">点击蜡烛上的火焰将其吹灭，全部熄灭后有惊喜哦～</p>
+      <div class="cake-stage">
+        <canvas id="cake-canvas" width="620" height="560"></canvas>
+        <div class="cake-caption" id="cake-caption">点击火焰 👆</div>
+      </div>
+    </section>
+
+    <!-- 许愿区 -->
+    <section id="wish" class="section">
+      <h2 class="section-title">🌠 许个愿吧</h2>
+      <p class="section-sub">许下的愿望，会化作流星划过夜空 ✨</p>
+      <div class="wish-box glass">
+        <textarea id="wish-input" rows="3" maxlength="80" placeholder="写下你的愿望，然后点击许愿…"></textarea>
+        <button class="btn btn-primary" id="btn-wish">✨ 许愿</button>
+      </div>
+      <div class="wish-history" id="wish-history"></div>
+    </section>
+
+    <!-- 祝福消息区 -->
+    <section id="messages" class="section">
+      <h2 class="section-title">💌 送给你的祝福</h2>
+      <div class="msg-rotator glass">
+        <div class="msg-text" id="msg-text"></div>
+        <div class="msg-dots" id="msg-dots"></div>
+      </div>
+      <div class="blessing-grid">
+        <div class="blessing-card glass">🎉 愿你年年有今日，岁岁有今朝</div>
+        <div class="blessing-card glass">🍀 愿你所有的愿望都能实现</div>
+        <div class="blessing-card glass">💪 愿你健康快乐，笑口常开</div>
+        <div class="blessing-card glass">🚀 愿你前程似锦，一路繁花</div>
+        <div class="blessing-card glass">👑 愿你永远是自己的小公主/小王子</div>
+        <div class="blessing-card glass">🌈 愿你的每一天都充满阳光</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Made with 💖 · 仅献给最特别的你</p>
+      <p class="footer-small">点击任意位置放烟花 · 右下角音乐按钮播放生日歌</p>
+    </footer>
+  </main>
+
+  <!-- ═══════════ 设置弹窗 ═══════════ -->
+  <div class="modal-mask" id="settings-modal">
+    <div class="modal glass">
+      <h3>⚙️ 个性化设置</h3>
+      <label>寿星的名字</label>
+      <input type="text" id="set-name" maxlength="12" placeholder="例如：小明" />
+      <label>生日日期</label>
+      <input type="date" id="set-date" />
+      <label>礼物主题 🎁</label>
+      <div class="theme-row">
+        <button class="theme-btn active" data-theme="default">💖 粉紫</button>
+        <button class="theme-btn" data-theme="ocean">🌊 海洋</button>
+        <button class="theme-btn" data-theme="gold">🌟 金色</button>
+        <button class="theme-btn" data-theme="forest">🌿 森绿</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-save-settings">保存</button>
+        <button class="btn btn-ghost" id="btn-cancel-settings">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 大标题烟花文本 -->
+  <div id="big-text" aria-hidden="true"></div>
+
+  <script src="js/music.js"></script>
+  <script src="js/stars.js"></script>
+  <script src="js/fireworks.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/cake.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
